@@ -1,7 +1,14 @@
-const Number = ({ name, number }) => {
+const Number = ({ id, name, number, handleDelete }) => {
+
+  const handleClick = (name) => {
+    if (confirm(`Delete ${name}?`)) {
+      handleDelete(id)
+    }
+  }
+
   return (
     <div>
-      {name} {number}
+      {name} {number} <button onClick={() => handleClick(name)} >delete</button>
     </div>
   )
 }
@@ -9,7 +16,8 @@ const Number = ({ name, number }) => {
 
 const Numbers = ({
   persons,
-  filter
+  filter,
+  handleDelete
 }) => {
   return (
     <>
@@ -17,9 +25,11 @@ const Numbers = ({
       {persons.filter(
         person => person.name.toLowerCase().includes(filter.toLowerCase())
       ).map(person => <Number 
-        key={person.name} 
+        key={person.name}
+        id={person.id}
         name={person.name} 
         number={person.number} 
+        handleDelete={handleDelete}
         />)}
     </>
   )

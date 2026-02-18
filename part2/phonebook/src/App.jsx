@@ -5,6 +5,8 @@ import Filter from './components/Filter'
 import AddEntry from './components/AddEntry'
 import Numbers from './components/Numbers'
 
+import personsService from './services/persons' 
+
 
 const App = () => {
   const [persons, setPersons] = useState([])
@@ -13,11 +15,9 @@ const App = () => {
   const [newFilter, setNewFilter] = useState('')
 
   useEffect(() => {
-    axios
-      .get('http://localhost:3001/persons')
-      .then((response) => {
-        setPersons(response.data)
-      })
+    personsService.getAll().then((data) => 
+      setPersons(data)
+    )
   }, [])
 
   const handleNameChange = (event) => {
@@ -34,17 +34,31 @@ const App = () => {
 
   const handleEntrySubmit = (event) => {
     event.preventDefault()
-    if (persons.some(person => person.name === newName)) {
-      alert(`${newName} is already in the phonebook`)
-    } else {
-      setPersons(persons.concat({
-        name: newName, 
-        number: newNumber
-      }))
-      setNewName('')
-      setNewNumber('')
+
+    const newPerson = {
+      name: newName,
+      number: newNumber
     }
+
+    if (persons.some(person => person.name === newName)) {
+      if (confirm(`${newPerson.name} is already added to phonebook, replace the old number with a new one?`)) {
+        const oldPerson = persons.find(person => person.name === newName)
+        personsService.update({...newPerson, id: oldPerson.id})
+        setPersons(persons.filter(person => person.name !== newName).concat(newPerson))
+      }
+    } else {
+      personsService.create(newPerson)
+      setPersons(persons.concat(newPerson))
+    }
+
+    setNewName('')
+    setNewNumber('')
   }
+
+  const handleDelete = (( id ) => {
+    setPersons(persons.filter(person => person.id !== id))
+    personsService._delete(id)
+  })  
 
   return (
     <div>
@@ -56,7 +70,7 @@ const App = () => {
         handleNameChange={handleNameChange} 
         handleNumberChange={handleNumberChange} 
       />
-      <Numbers persons={persons} filter={newFilter} />
+      <Numbers persons={persons} filter={newFilter} handleDelete={handleDelete} />
     </div>
   )
 }
