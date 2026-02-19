@@ -1,6 +1,8 @@
 import { useState } from "react";
 import axios from "axios";
 
+import Weather from "./Weather";
+
 const base_url = "https://studies.cs.helsinki.fi/restcountries/api";
 
 const Countries = ({ countryList, handleShow }) => {
@@ -52,6 +54,7 @@ const Countries = ({ countryList, handleShow }) => {
           ))}
         </ul>
         <img src={countryData.flags.svg} height="200" />
+        <Weather countryData={countryData} />
       </div>
     );
   }
