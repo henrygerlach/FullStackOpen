@@ -1,36 +1,50 @@
-import { useState } from 'react'
-import axios from 'axios'
+import { useState, useEffect } from "react";
+import axios from "axios";
 
-const base_url = "https://studies.cs.helsinki.fi/restcountries/api"
+import Countries from "./components/Countries";
+import Form from "./components/Form";
 
-function App() {
-  const [countryList, setCountryList] = useState([])
+const base_url = "https://studies.cs.helsinki.fi/restcountries/api";
+const allCountries = [];
+
+const App = () => {
+  const [countryList, setCountryList] = useState([]);
+
+  useEffect(() => {
+    axios.get(`${base_url}/all`).then((response) => {
+      response.data.forEach((country) => {
+        allCountries.push(country.name.common);
+      });
+      console.log("Loaded Countries Data");
+    });
+  }, []);
 
   const handleFilterChange = (event) => {
-    /* get all countries matching the filter */
-    const filter = event.target.value.toLowerCase()
-    console.log(`Filter: ${filter}`)
-    axios.get(`${base_url}/all`).then(response => {
-      let countryNames = []
-      response.data.forEach((country) => {
-        countryNames.push(country.name.common)
-      })
-      
-      countryNames = countryNames.filter((name) => name.toLowerCase().includes(filter))
+    if (allCountries.length === 0) {
+      console.log("Countries Data hasn't loaded yet.");
+      return;
+    }
 
-      console.log(`Length of Filtered List: ${countryNames.length}, First Country: ${countryNames[0]}`)
-    })  
-  }
+    const filter = event.target.value.toLowerCase();
+    console.log("Filter", filter);
+
+    if (filter === "") {
+      setCountryList([]);
+    } else {
+      setCountryList(
+        allCountries.filter((name) => name.toLowerCase().includes(filter)),
+      );
+    }
+  };
 
   return (
     <div>
       <form>
-        <div>
-          find countries <input onChange={handleFilterChange} />
-        </div>
+        <Form text={"find countries"} handleChange={handleFilterChange} />
+        <Countries countryList={countryList} />
       </form>
     </div>
-  )
-}
+  );
+};
 
-export default App
+export default App;
