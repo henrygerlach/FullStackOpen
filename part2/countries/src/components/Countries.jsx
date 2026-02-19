@@ -3,7 +3,7 @@ import axios from "axios";
 
 const base_url = "https://studies.cs.helsinki.fi/restcountries/api";
 
-const Countries = ({ countryList }) => {
+const Countries = ({ countryList, handleShow }) => {
   const [countryData, setCountryData] = useState(null);
 
   if (countryList.length > 10) {
@@ -17,7 +17,12 @@ const Countries = ({ countryList }) => {
       <div>
         <ul>
           {countryList.map((name) => (
-            <li key={name}>{name}</li>
+            <li key={name}>
+              {name}{" "}
+              <button onClick={handleShow} value={name}>
+                Show
+              </button>
+            </li>
           ))}
         </ul>
       </div>

@@ -1,7 +1,9 @@
-const Form = ({ text, handleChange }) => {
+const Form = ({ text, filter, handleChange }) => {
   return (
     <div>
-      {text} <input onChange={handleChange} />
+      <form>
+        {text} <input name={text} value={filter} onChange={handleChange} />
+      </form>
     </div>
   );
 };

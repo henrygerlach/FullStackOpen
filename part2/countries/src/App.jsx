@@ -9,6 +9,7 @@ const allCountries = [];
 
 const App = () => {
   const [countryList, setCountryList] = useState([]);
+  const [filter, setFilter] = useState("");
 
   useEffect(() => {
     axios.get(`${base_url}/all`).then((response) => {
@@ -19,30 +20,33 @@ const App = () => {
     });
   }, []);
 
-  const handleFilterChange = (event) => {
+  const updateCountryList = (event) => {
     if (allCountries.length === 0) {
       console.log("Countries Data hasn't loaded yet.");
       return;
     }
 
-    const filter = event.target.value.toLowerCase();
-    console.log("Filter", filter);
+    const newFilter = event.target.value.toLowerCase();
+    setFilter(newFilter);
+    console.log("Filter", newFilter);
 
-    if (filter === "") {
+    if (newFilter === "") {
       setCountryList([]);
     } else {
       setCountryList(
-        allCountries.filter((name) => name.toLowerCase().includes(filter)),
+        allCountries.filter((name) => name.toLowerCase().includes(newFilter)),
       );
     }
   };
 
   return (
     <div>
-      <form>
-        <Form text={"find countries"} handleChange={handleFilterChange} />
-        <Countries countryList={countryList} />
-      </form>
+      <Form
+        text={"find countries"}
+        filter={filter}
+        handleChange={updateCountryList}
+      />
+      <Countries countryList={countryList} handleShow={updateCountryList} />
     </div>
   );
 };
