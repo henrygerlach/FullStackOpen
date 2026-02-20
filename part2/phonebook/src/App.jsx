@@ -81,9 +81,9 @@ const App = () => {
 
     setPersons(persons.filter((person) => person.id !== id));
 
-    let error_occurred = False;
+    let error_occurred = false;
     personsService._delete(id).catch(() => {
-      error_occurred = True;
+      error_occurred = true;
       updateNotification(
         `Information for ${deletePerson.name} has already been removed from server`,
       );
