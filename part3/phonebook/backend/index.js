@@ -4,7 +4,14 @@ const morgan = require("morgan");
 const mongoose = require("mongoose");
 
 mongoose.set("strictQuery", false);
-mongoose.connect(process.env.mongodb_uri, { family: 4 });
+mongoose
+  .connect(process.env.mongodb_uri, { family: 4 })
+  .then((result) => {
+    console.log("connected to MongoDB");
+  })
+  .catch((error) => {
+    console.log("error connecting to MongoDB:", error.message);
+  });
 
 const personSchema = new mongoose.Schema({
   name: String,
@@ -28,10 +35,6 @@ app.use(
   ),
 );
 
-const genID = () => {
-  return String(Math.floor(Math.random() * 1000000));
-};
-
 app.get("/api/persons", (request, response) => {
   Person.find({}).then((persons) => {
     response.json(persons);
@@ -41,7 +44,10 @@ app.get("/api/persons", (request, response) => {
 app.post("/api/persons", (request, response) => {
   const body = request.body;
 
-  const oldPerson = Person.find({ name: body.name });
+  let oldPerson;
+  Person.find({ name: body.name }).then((person) => {
+    oldPerson = person;
+  });
 
   let error = null;
   if (!body.name) {
@@ -53,6 +59,7 @@ app.post("/api/persons", (request, response) => {
   }
 
   if (error) {
+    console.log(error);
     return response.status(400).json({
       error: error,
     });
@@ -69,37 +76,32 @@ app.post("/api/persons", (request, response) => {
 
 app.get("/api/persons/:id", (request, response) => {
   const id = request.params.id;
-  const person = Person.find({ _id: id });
-
-  if (person) {
-    response.json(person);
-  } else {
-    response.status(404).end();
-  }
+  Person.find({ _id: id }).then((person) => {
+    if (person) {
+      response.json(person);
+    } else {
+      response.status(404).end();
+    }
+  });
 });
 
 app.delete("/api/persons/:id", (request, response) => {
   const id = request.params.id;
-  Person.findByIdAndDelete(id, (err, docs) => {
-    if (err) {
-      console.log(`error deleting ${id}: ${err}`);
-      response.status(404).end();
-    } else {
+  Person.findByIdAndDelete(id).then((value) => {
+    if (value) {
       response.status(204).end();
+    } else {
+      response.status(404).end();
     }
   });
 });
 
 app.get("/info", (request, response) => {
   const now = Date().toString();
-  Person.count({}, (err, count) => {
-    if (err) {
-      console.log(`error counting documents: ${err}`);
-    } else {
-      response.send(
-        `<div>Phonebook has info for ${count} people</div><br><div>${now}</div>`,
-      );
-    }
+  Person.find({}).then((persons) => {
+    response.send(
+      `<div>Phonebook has info for ${persons.length} people</div><br><div>${now}</div>`,
+    );
   });
 });
 
