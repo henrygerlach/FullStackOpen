@@ -1,5 +1,17 @@
+require("dotenv").config();
 const express = require("express");
 const morgan = require("morgan");
+const mongoose = require("mongoose");
+
+mongoose.set("strictQuery", false);
+mongoose.connect(process.env.mongodb_uri, { family: 4 });
+
+const personSchema = new mongoose.Schema({
+  name: String,
+  number: String,
+});
+
+const Person = new mongoose.model("Person", personSchema);
 
 const app = express();
 
@@ -16,41 +28,20 @@ app.use(
   ),
 );
 
-let persons = [
-  {
-    id: "1",
-    name: "Arto Hellas",
-    number: "040-123456",
-  },
-  {
-    id: "2",
-    name: "Ada Lovelace",
-    number: "39-44-5323523",
-  },
-  {
-    id: "3",
-    name: "Dan Abramov",
-    number: "12-43-234345",
-  },
-  {
-    id: "4",
-    name: "Mary Poppendieck",
-    number: "39-23-6423122",
-  },
-];
-
 const genID = () => {
   return String(Math.floor(Math.random() * 1000000));
 };
 
 app.get("/api/persons", (request, response) => {
-  response.json(persons);
+  Person.find({}).then((persons) => {
+    response.json(persons);
+  });
 });
 
 app.post("/api/persons", (request, response) => {
   const body = request.body;
 
-  const oldPerson = persons.find((person) => person.name === body.name);
+  const oldPerson = Person.find({ name: body.name });
 
   let error = null;
   if (!body.name) {
@@ -67,19 +58,18 @@ app.post("/api/persons", (request, response) => {
     });
   }
 
-  const person = {
-    id: genID(),
+  const person = Person({
     name: body.name,
     number: body.number,
-  };
-  persons = persons.concat(person);
-
-  response.json(person);
+  });
+  person.save().then((person) => {
+    response.json(person);
+  });
 });
 
 app.get("/api/persons/:id", (request, response) => {
   const id = request.params.id;
-  const person = persons.find((person) => person.id === id);
+  const person = Person.find({ _id: id });
 
   if (person) {
     response.json(person);
@@ -90,16 +80,27 @@ app.get("/api/persons/:id", (request, response) => {
 
 app.delete("/api/persons/:id", (request, response) => {
   const id = request.params.id;
-  persons = persons.filter((person) => person.id !== id);
-
-  response.status(204).end();
+  Person.findByIdAndDelete(id, (err, docs) => {
+    if (err) {
+      console.log(`error deleting ${id}: ${err}`);
+      response.status(404).end();
+    } else {
+      response.status(204).end();
+    }
+  });
 });
 
 app.get("/info", (request, response) => {
   const now = Date().toString();
-  response.send(
-    `<div>Phonebook has info for ${persons.length} people</div><br><div>${now}</div>`,
-  );
+  Person.count({}, (err, count) => {
+    if (err) {
+      console.log(`error counting documents: ${err}`);
+    } else {
+      response.send(
+        `<div>Phonebook has info for ${count} people</div><br><div>${now}</div>`,
+      );
+    }
+  });
 });
 
 const PORT = process.env.PORT || 3001;

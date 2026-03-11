@@ -15,7 +15,6 @@ mongoose.set("strictQuery", false);
 mongoose.connect(url, { family: 4 });
 
 const personSchema = new mongoose.Schema({
-  id: Number,
   name: String,
   number: String,
 });
@@ -23,7 +22,6 @@ const personSchema = new mongoose.Schema({
 const Person = new mongoose.model("Person", personSchema);
 
 const newPerson = new Person({
-  id: Math.floor(Math.random() * 1000000),
   name: name,
   number: number,
 });
