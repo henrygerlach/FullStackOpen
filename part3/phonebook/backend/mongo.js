@@ -9,7 +9,7 @@ const password = process.argv[2];
 const name = process.argv[3];
 const number = process.argv[4];
 
-const url = `mongodb+srv://henrygerlachmorten_db_user:${password}@phonebook.zlosu7a.mongodb.net/phonebookApp?appName=Phonebook`;
+const url = `mongodb+srv://db_user:${password}@phonebook.zlosu7a.mongodb.net/phonebookApp?appName=Phonebook`;
 
 mongoose.set("strictQuery", false);
 mongoose.connect(url, { family: 4 });
