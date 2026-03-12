@@ -26,7 +26,7 @@ const newPerson = new Person({
   number: number,
 });
 
-newPerson.save().then((result) => {
+newPerson.save().then(() => {
   console.log(`added ${name} ${number} to the phonebook`);
   Person.find({}).then((persons) => {
     console.log("Phonebook");

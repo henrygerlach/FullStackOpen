@@ -28,7 +28,7 @@ app.post("/api/persons", (request, response, next) => {
   const body = request.body;
 
   let error;
-  Person.find({ name: body.name }).then((person) => {
+  Person.find({ name: body.name }).then(() => {
     error = "name must be unique";
   });
 

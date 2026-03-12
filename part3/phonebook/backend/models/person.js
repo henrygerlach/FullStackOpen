@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 mongoose.set("strictQuery", false);
 mongoose
   .connect(process.env.mongodb_uri, { family: 4 })
-  .then((result) => {
+  .then(() => {
     console.log("connected to MongoDB");
   })
   .catch((error) => {
