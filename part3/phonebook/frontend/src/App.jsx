@@ -67,9 +67,12 @@ const App = () => {
         updateNotification(`Updated ${newPerson.name}`);
       }
     } else {
-      personsService.create(newPerson);
-      setPersons(persons.concat(newPerson));
-      updateNotification(`Added ${newPerson.name}`);
+      const person = personsService.create(newPerson).then((person) => {
+        if (person) {
+          setPersons(persons.concat(newPerson));
+          updateNotification(`Added ${newPerson.name}`);
+        }
+      });
     }
 
     setNewName("");

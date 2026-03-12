@@ -57,26 +57,45 @@ app.post("/api/persons", (request, response) => {
   });
 });
 
-app.get("/api/persons/:id", (request, response) => {
+app.get("/api/persons/:id", (request, response, next) => {
   const id = request.params.id;
-  Person.find({ _id: id }).then((person) => {
-    if (person) {
-      response.json(person);
-    } else {
-      response.status(404).end();
-    }
-  });
+  Person.find({ _id: id })
+    .then((person) => {
+      if (person) {
+        response.json(person);
+      } else {
+        response.status(404).end();
+      }
+    })
+    .catch((error) => next(error));
 });
 
-app.delete("/api/persons/:id", (request, response) => {
+app.delete("/api/persons/:id", (request, response, next) => {
   const id = request.params.id;
-  Person.findByIdAndDelete(id).then((value) => {
-    if (value) {
-      response.status(204).end();
-    } else {
-      response.status(404).end();
-    }
-  });
+  Person.findByIdAndDelete(id)
+    .then((value) => {
+      if (value) {
+        response.status(204).end();
+      } else {
+        response.status(404).end();
+      }
+    })
+    .catch((error) => next(error));
+});
+
+app.put("/api/persons/:id", (request, response, next) => {
+  const id = request.params.id;
+
+  console.log(id);
+
+  Person.findOne({ _id: id })
+    .then((person) => {
+      const { name, number } = request.body;
+      person.name = name;
+      person.number = number;
+      person.save().then((person) => response.json(person));
+    })
+    .catch((error) => next(error));
 });
 
 app.get("/info", (request, response) => {
@@ -87,6 +106,18 @@ app.get("/info", (request, response) => {
     );
   });
 });
+
+const errorHandler = (error, request, response, next) => {
+  console.error(error.message);
+
+  if (error.name === "CastError") {
+    return response.status(400).send({ error: "malformatted id" });
+  }
+
+  next(error);
+};
+
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
