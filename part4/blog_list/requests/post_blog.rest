@@ -1,0 +1,9 @@
+POST http://localhost:3003/api/blogs
+content-type: application/json
+
+{
+  "title": "NodeJS is AMAZING",
+  "author": "Harry Hirsch",
+  "url": "http://harryblog.com",
+  "likes": 3
+}
