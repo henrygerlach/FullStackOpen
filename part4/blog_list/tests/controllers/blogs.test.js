@@ -103,6 +103,49 @@ test("blogs are posted correctly", async () => {
   assert.strictEqual(saved.likes, newBlog.likes);
 });
 
+test("likes defaults to 0", async () => {
+  const newBlog = {
+    title: "My Blog",
+    author: "Harry Hirsch",
+    url: "my.blog.com",
+  };
+
+  await api
+    .post("/api/blogs")
+    .send(newBlog)
+    .set("Content-Type", "application/json")
+    .expect(201);
+
+  const saved = await Blog.findOne({ title: newBlog.title });
+  assert.strictEqual(saved.likes, 0);
+});
+
+test("post response has status 400, when blogs title or url is missing", async () => {
+  const missingTitleBlog = {
+    author: "Harry Hirsch",
+    url: "my.blog.com",
+    likes: 67,
+  };
+
+  await api
+    .post("/api/blogs")
+    .send(missingTitleBlog)
+    .set("Content-Type", "application/json")
+    .expect(400);
+
+  const missingUrlBlog = {
+    title: "My Blog",
+    author: "Harry Hirsch",
+    likes: 67,
+  };
+
+  await api
+    .post("/api/blogs")
+    .send(missingUrlBlog)
+    .set("Content-Type", "application/json")
+    .expect(400);
+});
+
 after(async () => {
   await mongoose.connection.close();
 });
