@@ -19,4 +19,31 @@ blogsRouter.post("/", (request, response) => {
   });
 });
 
+blogsRouter.delete("/:id", async (request, response) => {
+  const id = request.params.id;
+
+  const blog = await Blog.findByIdAndDelete(id);
+
+  if (blog) {
+    response.status(204).end();
+  } else {
+    response.status(404).end();
+  }
+});
+
+blogsRouter.put("/:id", async (request, response) => {
+  const id = request.params.id;
+  const newBlog = request.body;
+
+  const oldBlog = await Blog.findOne({ _id: id });
+
+  if (oldBlog) {
+    oldBlog.likes = newBlog.likes;
+    await oldBlog.save();
+    response.json(oldBlog);
+  } else {
+    response.status(404).end();
+  }
+});
+
 module.exports = blogsRouter;
