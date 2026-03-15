@@ -2,8 +2,8 @@ const { test, after, describe, beforeEach } = require("node:test");
 const assert = require("node:assert");
 const mongoose = require("mongoose");
 const supertest = require("supertest");
-const app = require("../../index");
-const Blog = require("../../utils/models");
+const app = require("../../app");
+const Blog = require("../../utils/models/blog");
 
 const api = supertest(app);
 

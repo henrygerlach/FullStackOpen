@@ -1,4 +1,4 @@
-const Blog = require("../utils/models");
+const Blog = require("../utils/models/blog");
 const blogsRouter = require("express").Router();
 
 blogsRouter.get("/", (request, response) => {
