@@ -11,6 +11,8 @@ const app = express();
 mongoose.connect(config.mongodb_uri, { family: 4 });
 
 app.use(express.json());
+app.use(middleware.requestLogger);
+app.use(middleware.setToken);
 
 app.use("/api/login", loginRouter);
 app.use("/api/blogs", blogsRouter);

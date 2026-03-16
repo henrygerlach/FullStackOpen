@@ -1,4 +1,7 @@
+const jwt = require("jsonwebtoken");
+const config = require("./config");
 const logger = require("./logger");
+const User = require("./models/user");
 
 const errorHandler = (error, request, response, next) => {
   logger.error(error.message);
@@ -27,4 +30,41 @@ const errorHandler = (error, request, response, next) => {
   next(error);
 };
 
-module.exports = { errorHandler };
+const setToken = (request, response, next) => {
+  const authorization = request.get("authorization");
+
+  if (authorization && authorization.startsWith("Bearer ")) {
+    request.token = authorization.replace("Bearer ", "");
+  } else {
+    request.token = null;
+  }
+
+  next();
+};
+
+const requestLogger = (request, response, next) => {
+  logger.info("Method:", request.method);
+  logger.info("Path:  ", request.path);
+  logger.info("Body:  ", request.body);
+  logger.info("---");
+  next();
+};
+
+const getUser = async (request, response, next) => {
+  const decodedToken = jwt.verify(request.token, config.jwt_secret);
+  if (!decodedToken.id) {
+    return response.status(401).json({ error: "token invalid" });
+  }
+
+  const user = await User.findOne({ _id: decodedToken.id });
+
+  if (!user) {
+    return response.status(400).json({ error: "UserId missing or not valid" });
+  }
+
+  request.user = user;
+
+  next();
+};
+
+module.exports = { errorHandler, setToken, requestLogger, getUser };
