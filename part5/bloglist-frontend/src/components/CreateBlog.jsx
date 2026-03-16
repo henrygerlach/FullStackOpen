@@ -1,24 +1,34 @@
-import Blog from "./Blog";
+import { useState } from "react";
+import blogService from "../services/blogs";
 
-const Blogs = ({
-  user,
-  blogs,
-  handleLogout,
-  title,
-  setTitle,
-  url,
-  setURL,
-  author,
-  setAuthor,
-  createBlog,
-}) => {
+const CreateBlog = ({ updateNotification, toggleCreateBlogRef, addBlog }) => {
+  const [title, setTitle] = useState("");
+  const [author, setAuthor] = useState("");
+  const [url, setURL] = useState("");
+
+  const createBlog = async (event) => {
+    event.preventDefault();
+
+    const blog = {
+      title: title,
+      url: url,
+      author: author,
+    };
+
+    const returnedBlog = await blogService.create(blog);
+    addBlog(returnedBlog);
+
+    setTitle("");
+    setAuthor("");
+    setURL("");
+
+    toggleCreateBlogRef.current.toggleVisibility();
+
+    updateNotification(`a new blog ${title} by ${author} added`, "green");
+  };
+
   return (
     <div>
-      <h2>blogs</h2>
-      <p>
-        {user.name} logged in
-        <button onClick={handleLogout}>logout</button>
-      </p>
       <h3>Create New</h3>
       <form onSubmit={createBlog}>
         <div>
@@ -50,12 +60,8 @@ const Blogs = ({
         </div>
         <button type="submit">create</button>
       </form>
-      <br />
-      {blogs.map((blog) => (
-        <Blog key={blog.id} blog={blog} />
-      ))}
     </div>
   );
 };
 
-export default Blogs;
+export default CreateBlog;

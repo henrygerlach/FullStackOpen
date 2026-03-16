@@ -29,7 +29,7 @@ blogsRouter.post("/", getUser, async (request, response) => {
   await user.save();
 
   await blog.save();
-  response.status(201).json(blogJSON);
+  response.status(201).json(blog);
 });
 
 blogsRouter.delete("/:id", getUser, async (request, response) => {

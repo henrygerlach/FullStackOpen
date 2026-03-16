@@ -22,4 +22,22 @@ const create = async (blog) => {
   return response.data;
 };
 
-export default { setToken, getAll, create };
+const update = async (blog) => {
+  const blogToUpdate = {
+    ...blog,
+    user: blog.user.id,
+  };
+
+  const response = await axios.put(`${baseUrl}/${blog.id}`, blogToUpdate);
+  return response.data;
+};
+
+const _delete = async (blog) => {
+  const config = {
+    headers: { Authorization: token },
+  };
+
+  await axios.delete(`${baseUrl}/${blog.id}`, config);
+};
+
+export default { setToken, getAll, create, update, _delete };

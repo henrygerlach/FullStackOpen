@@ -1,24 +1,28 @@
 import "./index.css";
-import { useState, useEffect } from "react";
-import Blogs from "./components/Blogs";
+import { useState, useEffect, useRef } from "react";
+import BlogList from "./components/BlogList";
+import CreateBlog from "./components/CreateBlog";
 import LoginForm from "./components/Login";
 import Notification from "./components/Notification";
+import Toggleable from "./components/Toggleable";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
 
 const App = () => {
-  const [title, setTitle] = useState("");
-  const [author, setAuthor] = useState("");
-  const [url, setURL] = useState("");
   const [blogs, setBlogs] = useState([]);
   const [username, setUsername] = useState([]);
   const [password, setPassword] = useState([]);
   const [user, setUser] = useState(null);
   const [notification, setNotification] = useState(null);
-  const [notificationColor, setNotificationColor] = useState(null);
+  const [notificationColor, setNotificationColor] = useState("green");
 
   useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(blogs));
+    const func = async () => {
+      const blogs = await blogService.getAll();
+      blogs.sort((a, b) => b.likes - a.likes);
+      setBlogs(blogs);
+    };
+    func();
   }, []);
 
   useEffect(() => {
@@ -52,20 +56,6 @@ const App = () => {
     window.localStorage.removeItem("user");
   };
 
-  const createBlog = async (event) => {
-    event.preventDefault();
-
-    const blog = {
-      title: title,
-      url: url,
-      author: author,
-    };
-
-    await blogService.create(blog);
-
-    updateNotification(`a new blog ${title} by ${author} added`, "green");
-  };
-
   const updateNotification = (message, color = "blue") => {
     setNotification(message);
     setNotificationColor(color);
@@ -73,6 +63,19 @@ const App = () => {
       setNotification(null);
     }, 5000);
   };
+
+  const addBlog = (blog) => {
+    const newBlogs = blogs.concat(blog);
+    newBlogs.sort((a, b) => b.likes - a.likes);
+    setBlogs(newBlogs);
+  };
+
+  const removeBlog = (blog) => {
+    const newBlogs = blogs.filter((b) => b.id !== blog.id);
+    setBlogs(newBlogs);
+  };
+
+  const toggleCreateBlogRef = useRef();
 
   return (
     <div>
@@ -87,18 +90,21 @@ const App = () => {
         />
       )}
       {user && (
-        <Blogs
-          user={user}
-          blogs={blogs}
-          handleLogout={handleLogout}
-          title={title}
-          setTitle={setTitle}
-          url={url}
-          setURL={setURL}
-          author={author}
-          setAuthor={setAuthor}
-          createBlog={createBlog}
-        />
+        <div>
+          <h2>blogs</h2>
+          <p>
+            {user.name} logged in
+            <button onClick={handleLogout}>logout</button>
+          </p>
+          <Toggleable buttonLabel="create new blog" ref={toggleCreateBlogRef}>
+            <CreateBlog
+              updateNotification={updateNotification}
+              toggleCreateBlogRef={toggleCreateBlogRef}
+              addBlog={addBlog}
+            />
+          </Toggleable>
+          <BlogList blogs={blogs} removeBlog={removeBlog} />
+        </div>
       )}
     </div>
   );
