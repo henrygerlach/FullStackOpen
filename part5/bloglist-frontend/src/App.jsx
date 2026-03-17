@@ -64,17 +64,6 @@ const App = () => {
     }, 5000);
   };
 
-  const addBlog = (blog) => {
-    const newBlogs = blogs.concat(blog);
-    newBlogs.sort((a, b) => b.likes - a.likes);
-    setBlogs(newBlogs);
-  };
-
-  const removeBlog = (blog) => {
-    const newBlogs = blogs.filter((b) => b.id !== blog.id);
-    setBlogs(newBlogs);
-  };
-
   const toggleCreateBlogRef = useRef();
 
   return (
@@ -100,10 +89,9 @@ const App = () => {
             <CreateBlog
               updateNotification={updateNotification}
               toggleCreateBlogRef={toggleCreateBlogRef}
-              addBlog={addBlog}
             />
           </Toggleable>
-          <BlogList blogs={blogs} removeBlog={removeBlog} />
+          <BlogList blogs={blogs} />
         </div>
       )}
     </div>

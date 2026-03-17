@@ -9,7 +9,7 @@ const blogStyle = {
   marginBottom: 5,
 };
 
-const Blog = ({ blog, removeBlog }) => {
+const Blog = ({ blog }) => {
   const [showExtended, setShowExtended] = useState(false);
   const [likes, setLikes] = useState(blog.likes);
 
@@ -26,7 +26,6 @@ const Blog = ({ blog, removeBlog }) => {
   const handleDelete = async () => {
     if (window.confirm(`Delete ${blog.title} from ${blog.author}?`)) {
       await blogService._delete(blog);
-      removeBlog(blog);
     }
   };
 
