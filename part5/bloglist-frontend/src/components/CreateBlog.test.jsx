@@ -28,6 +28,7 @@ describe("<CreateBlog />", () => {
       <CreateBlog
         updateNotification={vi.fn()}
         toggleCreateBlogRef={{ current: { toggleVisibility: vi.fn() } }}
+        reloadBlogs={vi.fn()}
       />,
     );
   });

@@ -17,12 +17,7 @@ const App = () => {
   const [notificationColor, setNotificationColor] = useState("green");
 
   useEffect(() => {
-    const func = async () => {
-      const blogs = await blogService.getAll();
-      blogs.sort((a, b) => b.likes - a.likes);
-      setBlogs(blogs);
-    };
-    func();
+    reloadBlogs();
   }, []);
 
   useEffect(() => {
@@ -33,6 +28,12 @@ const App = () => {
       setUser(user);
     }
   }, []);
+
+  const reloadBlogs = async () => {
+    const blogs = await blogService.getAll();
+    blogs.sort((a, b) => b.likes - a.likes);
+    setBlogs(blogs);
+  };
 
   const handleLogin = async (event) => {
     event.preventDefault();
@@ -89,9 +90,10 @@ const App = () => {
             <CreateBlog
               updateNotification={updateNotification}
               toggleCreateBlogRef={toggleCreateBlogRef}
+              reloadBlogs={reloadBlogs}
             />
           </Toggleable>
-          <BlogList blogs={blogs} />
+          <BlogList blogs={blogs} reloadBlogs={reloadBlogs} user={user} />
         </div>
       )}
     </div>

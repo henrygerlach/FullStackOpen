@@ -9,7 +9,7 @@ const blogStyle = {
   marginBottom: 5,
 };
 
-const Blog = ({ blog }) => {
+const Blog = ({ blog, reloadBlogs, user }) => {
   const [showExtended, setShowExtended] = useState(false);
   const [likes, setLikes] = useState(blog.likes);
 
@@ -27,6 +27,8 @@ const Blog = ({ blog }) => {
     if (window.confirm(`Delete ${blog.title} from ${blog.author}?`)) {
       await blogService._delete(blog);
     }
+
+    reloadBlogs();
   };
 
   if (!showExtended) {
@@ -60,8 +62,12 @@ const Blog = ({ blog }) => {
       <button onClick={handleLike}>like</button>
       <br />
       {blog.author}
-      <br />
-      <button onClick={handleDelete}>delete</button>
+      {blog.user.username === user.username ? (
+        <div>
+          <br />
+          <button onClick={handleDelete}>delete</button>
+        </div>
+      ) : null}
     </div>
   );
 };
