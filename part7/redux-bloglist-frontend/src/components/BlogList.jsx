@@ -1,14 +1,12 @@
-import { useSelector } from "react-redux";
+import BlogListEntry from "./BlogListEntry";
+import CreateBlogToggleable from "./CreateBlogToggleable";
 
-import Blog from "./Blog";
-
-const BlogList = ({ user }) => {
-  const blogs = useSelector((state) => state.blogs);
-
+const BlogList = ({ blogs, toggleCreateBlogRef }) => {
   return (
     <div>
+      <CreateBlogToggleable toggleCreateBlogRef={toggleCreateBlogRef} />
       {blogs.map((blog) => (
-        <Blog key={blog.id} blog={blog} user={user} />
+        <BlogListEntry key={blog.id} blog={blog} />
       ))}
     </div>
   );

@@ -1,28 +1,35 @@
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Routes, Route, useMatch } from "react-router-dom";
 
 import "./index.css";
+import Blog from "./components/Blog";
 import BlogList from "./components/BlogList";
-import CreateBlog from "./components/CreateBlog";
+import Header from "./components/Header";
 import LoginForm from "./components/Login";
 import Notification from "./components/Notification";
-import Toggleable from "./components/Toggleable";
-import loginService from "./services/login";
-import { setNotification } from "./reducers/notificationReducer";
+import User from "./components/User";
+import Users from "./components/Users";
 import { initBlogs } from "./reducers/blogsReducer";
-import { changeUser, revokeUser } from "./reducers/userReducer";
+import { changeUser } from "./reducers/userReducer";
+import { initUsers } from "./reducers/usersReducer";
 
 const App = () => {
-  const [username, setUsername] = useState([]);
-  const [password, setPassword] = useState([]);
-
   const dispatch = useDispatch();
 
+  const blogs = useSelector((state) => state.blogs);
+  const users = useSelector((state) => state.users);
   const user = useSelector((state) => state.user);
 
-  useEffect(() => {
-    dispatch(initBlogs());
-  }, []);
+  const usersIdMatch = useMatch("/users/:id");
+  const userInfo = usersIdMatch
+    ? users.find((user) => user.id === usersIdMatch.params.id)
+    : null;
+
+  const blogsIdMatch = useMatch("/blogs/:id");
+  const blogInfo = blogsIdMatch
+    ? blogs.find((blog) => blog.id === blogsIdMatch.params.id)
+    : null;
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem("user");
@@ -30,54 +37,35 @@ const App = () => {
       const user = JSON.parse(loggedUserJSON);
       dispatch(changeUser(user));
     }
+
+    dispatch(initUsers());
+    dispatch(initBlogs());
   }, []);
-
-  const handleLogin = async (event) => {
-    event.preventDefault();
-
-    try {
-      const user = await loginService.login({ username, password });
-      window.localStorage.setItem("user", JSON.stringify(user));
-      dispatch(changeUser(user));
-      setUsername("");
-      setPassword("");
-    } catch {
-      dispatch(setNotification("wrong username or password", "red"));
-    }
-  };
-
-  const handleLogout = (event) => {
-    event.preventDefault();
-
-    dispatch(revokeUser());
-    window.localStorage.removeItem("user");
-  };
 
   const toggleCreateBlogRef = useRef();
 
   return (
     <div>
       <Notification />
-      {!user && (
-        <LoginForm
-          username={username}
-          password={password}
-          setUsername={setUsername}
-          setPassword={setPassword}
-          handleLogin={handleLogin}
-        />
-      )}
+      {!user && <LoginForm />}
       {user && (
         <div>
-          <h2>blogs</h2>
-          <p>
-            {user.name} logged in
-            <button onClick={handleLogout}>logout</button>
-          </p>
-          <Toggleable buttonLabel="create new blog" ref={toggleCreateBlogRef}>
-            <CreateBlog toggleCreateBlogRef={toggleCreateBlogRef} />
-          </Toggleable>
-          <BlogList user={user} />
+          <Header user={user} />
+          <Routes>
+            <Route
+              path={"/"}
+              element={
+                <BlogList
+                  user={user}
+                  blogs={blogs}
+                  toggleCreateBlogRef={toggleCreateBlogRef}
+                />
+              }
+            />
+            <Route path={"/blogs/:id"} element={<Blog blog={blogInfo} />} />
+            <Route path={"/users"} element={<Users users={users} />} />
+            <Route path={"/users/:id"} element={<User user={userInfo} />} />
+          </Routes>
         </div>
       )}
     </div>
