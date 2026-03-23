@@ -1,30 +1,38 @@
+import { Card, Table } from "react-bootstrap";
 import { Link } from "react-router-dom";
 
 const Users = ({ users }) => {
   return (
-    <div>
-      <h2>Users</h2>
-      <table>
-        <thead>
-          <tr>
-            <th></th>
-            <th>
-              <strong>blogs created</strong>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {users.map((user) => (
-            <tr key={user.id}>
-              <td>
-                <Link to={`/users/${user.id}`}>{user.name}</Link>
-              </td>
-              <td>{user.blogs.length}</td>
+    <Card className="border-0 shadow-sm">
+      <Card.Body>
+        <h2 className="h4 mb-3">Users</h2>
+        <Table
+          responsive
+          borderless
+          hover
+          className="align-middle users-table mb-0"
+        >
+          <thead>
+            <tr>
+              <th>User</th>
+              <th className="text-end">Blogs Created</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+          </thead>
+          <tbody>
+            {users.map((user) => (
+              <tr key={user.id}>
+                <td>
+                  <Link className="blog-link" to={`/users/${user.id}`}>
+                    {user.name}
+                  </Link>
+                </td>
+                <td className="text-end">{user.blogs.length}</td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
+      </Card.Body>
+    </Card>
   );
 };
 

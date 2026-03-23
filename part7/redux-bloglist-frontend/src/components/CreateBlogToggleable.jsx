@@ -3,7 +3,7 @@ import Toggleable from "./Toggleable";
 
 const CreateBlogToggleable = ({ toggleCreateBlogRef }) => {
   return (
-    <div>
+    <div className="mb-2">
       <Toggleable buttonLabel="create new blog" ref={toggleCreateBlogRef}>
         <CreateBlog toggleCreateBlogRef={toggleCreateBlogRef} />
       </Toggleable>

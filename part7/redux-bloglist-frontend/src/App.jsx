@@ -1,8 +1,8 @@
 import { useEffect, useRef } from "react";
+import { Container } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { Routes, Route, useMatch } from "react-router-dom";
 
-import "./index.css";
 import Blog from "./components/Blog";
 import BlogList from "./components/BlogList";
 import Header from "./components/Header";
@@ -45,11 +45,11 @@ const App = () => {
   const toggleCreateBlogRef = useRef();
 
   return (
-    <div className="container">
+    <Container className="app-shell py-4 py-md-5">
       <Notification />
       {!user && <LoginForm />}
       {user && (
-        <div>
+        <div className="content-panel">
           <Header user={user} />
           <Routes>
             <Route
@@ -68,7 +68,7 @@ const App = () => {
           </Routes>
         </div>
       )}
-    </div>
+    </Container>
   );
 };
 

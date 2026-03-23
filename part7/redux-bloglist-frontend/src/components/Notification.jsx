@@ -1,3 +1,4 @@
+import { Alert } from "react-bootstrap";
 import { useSelector } from "react-redux";
 
 const Notification = () => {
@@ -7,10 +8,12 @@ const Notification = () => {
     return null;
   }
 
+  const variant = color === "red" ? "danger" : "success";
+
   return (
-    <div style={{ color: color }} className="notification">
+    <Alert variant={variant} className="notification mb-4 border-0 shadow-sm">
       {notification}
-    </div>
+    </Alert>
   );
 };
 

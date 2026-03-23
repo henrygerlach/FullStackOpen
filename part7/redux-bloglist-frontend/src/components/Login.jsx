@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Button, Card, Form } from "react-bootstrap";
 import { useDispatch } from "react-redux";
 
 import loginService from "../services/login";
@@ -26,32 +27,34 @@ const LoginForm = () => {
   };
 
   return (
-    <div>
-      <h2>Login</h2>
-      <form onSubmit={handleLogin}>
-        <div>
-          <label>
-            username
-            <input
+    <Card className="login-card mx-auto border-0 shadow">
+      <Card.Body className="p-4 p-md-5">
+        <h2 className="h4 mb-4">Login</h2>
+        <Form onSubmit={handleLogin}>
+          <Form.Group className="mb-3" controlId="username">
+            <Form.Label>Username</Form.Label>
+            <Form.Control
               type="text"
               value={username}
               onChange={({ target }) => setUsername(target.value)}
             />
-          </label>
-        </div>
-        <div>
-          <label>
-            password
-            <input
+          </Form.Group>
+
+          <Form.Group className="mb-4" controlId="password">
+            <Form.Label>Password</Form.Label>
+            <Form.Control
               type="password"
               value={password}
               onChange={({ target }) => setPassword(target.value)}
             />
-          </label>
-        </div>
-        <button type="submit">login</button>
-      </form>
-    </div>
+          </Form.Group>
+
+          <Button type="submit" variant="info" className="w-100 fw-semibold">
+            Login
+          </Button>
+        </Form>
+      </Card.Body>
+    </Card>
   );
 };
 

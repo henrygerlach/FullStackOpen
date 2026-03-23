@@ -1,8 +1,189 @@
+:root {
+  --app-bg-1: #10131f;
+  --app-bg-2: #1a1f32;
+  --app-surface: #1b2136;
+  --app-surface-soft: #242b45;
+  --app-border: #374060;
+  --app-text: #eef2ff;
+  --app-muted: #bac5e6;
+  --app-pastel-cyan: #8ee7e7;
+  --app-pastel-mint: #9ce7c8;
+  --app-pastel-peach: #f7c7a8;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--app-text);
+  background:
+    radial-gradient(
+      circle at 15% 20%,
+      rgba(142, 231, 231, 0.1),
+      transparent 35%
+    ),
+    radial-gradient(
+      circle at 90% 5%,
+      rgba(247, 199, 168, 0.08),
+      transparent 28%
+    ),
+    linear-gradient(165deg, var(--app-bg-1), var(--app-bg-2));
+}
+
+#root {
+  min-height: 100vh;
+}
+
+.app-shell {
+  max-width: 960px;
+}
+
+.content-panel {
+  display: grid;
+  gap: 1rem;
+}
+
+.themed-navbar {
+  background: linear-gradient(
+    120deg,
+    rgba(28, 35, 58, 0.95),
+    rgba(37, 47, 77, 0.95)
+  );
+  border: 1px solid var(--app-border);
+  backdrop-filter: blur(8px);
+}
+
+.themed-navbar .navbar-brand,
+.themed-navbar .nav-link {
+  color: var(--app-pastel-cyan);
+}
+
+.themed-navbar .nav-link:hover,
+.themed-navbar .navbar-brand:hover {
+  color: var(--app-pastel-peach);
+}
+
+.card,
+.list-group,
+.list-group-item,
+.table {
+  --bs-card-bg: rgba(27, 33, 54, 0.92);
+  --bs-card-color: var(--app-text);
+  --bs-list-group-bg: rgba(27, 33, 54, 0.9);
+  --bs-list-group-color: var(--app-text);
+  --bs-list-group-border-color: rgba(141, 154, 196, 0.2);
+  --bs-table-bg: transparent;
+  --bs-table-color: var(--app-text);
+  --bs-table-border-color: rgba(141, 154, 196, 0.2);
+  border-color: var(--app-border);
+}
+
+.users-table thead th {
+  color: var(--app-muted);
+  letter-spacing: 0.02em;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+}
+
+.blog-link {
+  color: var(--app-pastel-cyan);
+  text-decoration: none;
+}
+
+.blog-link:hover {
+  color: var(--app-pastel-peach);
+}
+
+.blog-list-item {
+  transition: background-color 0.2s ease;
+}
+
+.blog-list-item:hover {
+  background-color: rgba(156, 231, 200, 0.08);
+}
+
+.login-card {
+  max-width: 460px;
+  background: linear-gradient(
+    150deg,
+    rgba(27, 33, 54, 0.96),
+    rgba(31, 39, 65, 0.96)
+  );
+}
+
+.create-blog-card {
+  background: rgba(27, 33, 54, 0.86);
+}
+
+.form-control {
+  --bs-body-bg: var(--app-surface-soft);
+  --bs-body-color: var(--app-text);
+  --bs-border-color: var(--app-border);
+  --bs-secondary-color: var(--app-muted);
+  background-color: var(--app-surface-soft);
+  color: var(--app-text);
+}
+
+.form-control:focus {
+  border-color: var(--app-pastel-cyan);
+  box-shadow: 0 0 0 0.25rem rgba(142, 231, 231, 0.2);
+}
+
+.btn-info {
+  --bs-btn-color: #10202a;
+  --bs-btn-bg: var(--app-pastel-cyan);
+  --bs-btn-border-color: var(--app-pastel-cyan);
+  --bs-btn-hover-color: #0d1a22;
+  --bs-btn-hover-bg: #9df0f0;
+  --bs-btn-hover-border-color: #9df0f0;
+}
+
+.btn-outline-info {
+  --bs-btn-color: var(--app-pastel-cyan);
+  --bs-btn-border-color: rgba(142, 231, 231, 0.7);
+  --bs-btn-hover-bg: rgba(142, 231, 231, 0.16);
+  --bs-btn-hover-border-color: var(--app-pastel-cyan);
+  --bs-btn-hover-color: var(--app-text);
+}
+
+.btn-outline-secondary {
+  --bs-btn-color: var(--app-muted);
+  --bs-btn-border-color: rgba(186, 197, 230, 0.5);
+  --bs-btn-hover-bg: rgba(186, 197, 230, 0.12);
+  --bs-btn-hover-color: var(--app-text);
+  --bs-btn-hover-border-color: rgba(186, 197, 230, 0.7);
+}
+
+.likes-pill {
+  background-color: rgba(156, 231, 200, 0.18) !important;
+  color: var(--app-pastel-mint);
+}
+
 .notification {
-  background: lightgrey;
-  font-size: 20px;
-  border-style: solid;
-  border-radius: 5px;
-  padding: 10px;
-  margin-bottom: 10px;
+  border-left: 4px solid var(--app-pastel-cyan);
+}
+
+.alert-success {
+  --bs-alert-color: #d5f6e8;
+  --bs-alert-bg: rgba(30, 81, 62, 0.45);
+  --bs-alert-border-color: rgba(156, 231, 200, 0.5);
+}
+
+.alert-danger {
+  --bs-alert-color: #ffdedd;
+  --bs-alert-bg: rgba(99, 43, 60, 0.5);
+  --bs-alert-border-color: rgba(247, 199, 168, 0.45);
+}
+
+.text-secondary {
+  color: var(--app-muted) !important;
+}
+
+@media (max-width: 576px) {
+  .app-shell {
+    padding-inline: 0.75rem;
+  }
 }
