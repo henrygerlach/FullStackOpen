@@ -45,7 +45,7 @@ const App = () => {
   const toggleCreateBlogRef = useRef();
 
   return (
-    <div>
+    <div className="container">
       <Notification />
       {!user && <LoginForm />}
       {user && (
